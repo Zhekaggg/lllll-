@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Информационная система сотрудников</title>
+  <link rel="stylesheet" href="rviain.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div id="branding">
+        <h1>Информационная система сотрудников</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Главная</a></li>
+          <li><a href="#">Регистрация</a></li>
+          <li><a href="#">Войти</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h3>Меню</h3>
+      <ul>
+        <li><a href="#">Панель приборов</a></li>
+        <li><a href="#">Список сотрудников</a></li>
+        <li><a href="#">Добавить сотрудника</a></li>
+      </ul>
+    </aside>
+
+    <main>
+      <section>
+        <h2>Информация о сотрудниках</h2>
+        <p>Здесь находится форма или отображение информации о сотруднике.</p>
+      </section>
+
+      <section>
+        <h2>Образование</h2>
+        <p>Здесь находится Информация об образавании сотрудника</p>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>&copy; 2048 Информационная система сотрудников</p>
+  </footer>
+</body>
+</html>
