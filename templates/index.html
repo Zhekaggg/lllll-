@@ -27,9 +27,15 @@
     <aside class="sidebar">
       <h3>Меню</h3>
       <ul>
-        <li><a href="#">Панель приборов</a></li>
-        <li><a href="#">Список сотрудников</a></li>
-        <li><a href="#">Добавить сотрудника</a></li>
+        <div class="calendar-container">
+          <div class="month-selector">
+              <button id="prevMonthBtn">&lt;</button>
+              <h2 id="currentMonth">Месяц</h2>
+              <button id="nextMonthBtn">&gt;</button>
+          </div>
+          <div id="calendar" class="calendar"></div>
+          <div id="eventList" class="event-list"></div>
+      </div>
       </ul>
     </aside>
 
