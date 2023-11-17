@@ -3,57 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Информационная система сотрудников</title>
+    <title>Employee Table</title>
     <link href="{{ url_for('static', filename='css/rviain.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ url_for('static', filename='js/script.js')}}"></script>
+
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div id="branding">
-        <h1>Информационная система сотрудников</h1>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="#">Главная</a></li>
-          <li><a href="/register">Регистрация</a></li>
-          <li><a href="/login">Войти</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <div class="container">
-    <aside class="sidebar">
-      <h3>Меню</h3>
-      <ul>
-        <div class="calendar-container">
-          <div class="month-selector">
-              <button id="prevMonthBtn">&lt;</button>
-              <h2 id="currentMonth">Месяц</h2>
-              <button id="nextMonthBtn">&gt;</button>
-          </div>
-          <div id="calendar" class="calendar"></div>
-          <div id="eventList" class="event-list"></div>
-      </div>
-      </ul>
-    </aside>
-
-    <main>
-      <section>
-        <h2>Информация о сотрудниках</h2>
-        <p>Здесь находится форма или отображение информации о сотруднике.</p>
-      </section>
-
-      <section>
-        <h2>Образование</h2>
-        <p>Здесь находится Информация об образавании сотрудника</p>
-      </section>
-    </main>
-  </div>
-
-  <footer>
-    <p>&copy; 2048 Информационная система сотрудников</p>
-  </footer>
+    <table id="employeeTable">
+        <thead>
+            <tr>
+                <th>ИФО</th>
+                <th>Должность</th>
+                <th>График работы</th>
+                <th>Оклад</th>
+                <th>Валюта</th>
+                <th>Образование</th>
+                <th>Дата принятия на работу</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.full_name }}</td>
+                    <td>{{ employee.position }}</td>
+                    <td>{{ employee.work_schedule }}</td>
+                    <td>{{ employee.salary }}</td>
+                    <td>{{ employee.currency}}</td>
+                    <td>{{ employee.education }}</td>
+                    <td>{{ employee.start_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
 </body>
 </html>
