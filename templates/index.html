@@ -28,7 +28,7 @@
     </header>
     
     {% if 'logged_in' in session %}
-        <p>Добро пожаловать, {{ session['username'] }}!</p>
+        <p>Добро пожаловать, {{ employee[0].full_name }}!</p>
         
         <table id="employeeTable">
             <thead>
