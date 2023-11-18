@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee</title>
+</head>
+<body>
+    <h1>Add Employee</h1>
+    <form method="post" action="{{ url_for('add_employee') }}">
+        <label for="full_name">ФИО:</label>
+        <input type="text" name="full_name" required><br>
+
+        <label for="position">Должность:</label>
+        <input type="text" name="position" required><br>
+
+        <label for="work_schedule">График работы:</label>
+        <input type="text" name="work_schedule" required><br>
+
+        <label for="salary">Оклад:</label>
+        <input type="number" name="salary" required><br>
+
+        <label for="currency">Валюта:</label>
+        <input type="text" name="currency" required><br>
+
+        <label for="education">Образование:</label>
+        <input type="text" name="education" required><br>
+
+        <label for="start_date">Дата принятия на работу:</label>
+        <input type="date" name="start_date" required><br>
+
+        <input type="submit" value="Add Employee">
+    </form>
+    <br>
+    <a href="{{ url_for('index') }}">Back to Employee List</a>
+</body>
+</html>
