@@ -1,13 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, g, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_basicauth import BasicAuth
 from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
+app.config['BASIC_AUTH_USERNAME'] = 'admin'
+app.config['BASIC_AUTH_PASSWORD'] = 'password'  # Change this to a secure password
+app.config['SECRET_KEY'] = 'ijijiejdijedekd'  # Change this to a secure secret key
 db = SQLAlchemy(app)
+basic_auth = BasicAuth(app)
 
 class Employee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(50))
     full_name = db.Column(db.String(100))
     position = db.Column(db.String(50))
     work_schedule = db.Column(db.String(50))
@@ -15,190 +22,73 @@ class Employee(db.Model):
     currency = db.Column(db.String(50))
     education = db.Column(db.String(100))
     start_date = db.Column(db.Date)
+    is_admin = db.Column(db.Boolean, default=False)
 
-"""with app.app_context():
-    db.create_all()
+class AdminEmployee(Employee):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.is_admin = True
 
-# Добавление данных в базу
-employee_data = [
-    {"full_name": "Рашид",
-     "position": "Продавец",
-      "work_schedule": "2/2, смены с 6:00 до 21:00",
-     "salary": 5000 ,
-     "currency": "VEF",
-      "education": "Среднее не полное",
-      "start_date": datetime(1903, 10, 29)},
 
-    {"full_name": "Алишер Метрясов Рубеков",
-     "position": "Стажер",
-      "work_schedule": "2/2, смены с 6:00 до 21:00",
-     "salary": 500, "currency": "VEF", 
-     "education": "Отсутствует", 
-     "start_date": datetime(1903, 10, 29)},
 
-    {"full_name": "Ратмир Скала Папович",
-     "position": " Охранник",
-      "work_schedule": "5/2, смены с 1:00 до 22:00",
-     "salary": 2006, "currency":"VEF",
-     "education": "Низшее",
-      "start_date": datetime(1, 1, 1)},
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-    {"full_name": "Ролан Алпысбаев Курагович",
-     "position": "Охранник",
-      "work_schedule": "5/2, смены с 1:00 до 22:00",
-     "salary": 2007, "currency": "VEF" ,
-     "education": "Пацанское-нисшее",
-      "start_date": datetime(1588, 12, 21)},
+        user = Employee.query.filter_by(username=username, password=password).first()
 
-    {"full_name": "Дильназ Кенжалиева Муратовна",
-     "position": "Уборщик",
-      "work_schedule": "7/0, смены с 8:00 до 1:00",
-     "salary": 6 ,"currency":"VEF" ,
-     "education": "Высшее",
-      "start_date": datetime(1672, 6, 14)},
+        if user:
+            session['logged_in'] = True
+            session['username'] = username
+            return redirect(url_for('index'))
+        else:
+            return render_template('login.html', error='Invalid credentials')
+
+    return render_template('login.html', error=None)
+
+# Add employee route
+@app.route('/add_employee', methods=['GET', 'POST'])
+def add_employee():
+    if 'logged_in' in session and session['logged_in']:
+        if session['username'] == 'AL0':  # Проверка, является ли пользователь AL0
+            if request.method == 'POST':
+                # Ваш код для добавления сотрудника
+                full_name = request.form['full_name']
+                position = request.form['position']
+                work_schedule = request.form['work_schedule']
+                salary = float(request.form['salary'])
+                currency = request.form['currency']
+                education = request.form['education']
+                start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
+
+                employee = Employee(
+                    full_name=full_name,
+                    position=position,
+                    work_schedule=work_schedule,
+                    salary=salary,
+                    currency=currency,
+                    education=education,
+                    start_date=start_date
+                )
+
+                db.session.add(employee)
+                db.session.commit()
+
+                return redirect(url_for('index'))
+
+            return render_template('add_employee.html')
+        else:
+            return "У вас нет прав для добавления работника."
+    else:
+        return redirect(url_for('login'))
     
-    {"full_name": "Светлана Иванова",
-     "position": "мЬл Бухгалтер",
-      "work_schedule": "5/2, смены с 9:00 до 18:00",
-     "salary": 700 ,"currency":"VEF" ,
-     "education": "Высшее",
-      "start_date": datetime(2022, 4, 3)},
-
-    {"full_name": "Максим Петров",
-     "position": "Менеджер по закупкам",
-      "work_schedule": "5/2, смены с 10:00 до 19:00",
-     "salary": 550, "currency":"VEF" ,
-     "education": "Среднее",
-      "start_date": datetime(2021, 5, 15)},
-
-    {"full_name": "Анна Смирнова",
-     "position": "Продавец-консультант",
-      "work_schedule": "6/1, смены с 8:00 до 16:00",
-     "salary": 400, "currency":"VEF" ,
-     "education": "Среднее специальное",
-      "start_date": datetime(2019, 7, 20)},
-
-    {"full_name": "Иван Чернов",
-     "position": "Разнорабочий",
-      "work_schedule": "5/2, смены с 7:00 до 16:00",
-     "salary": 550,"currency": "VEF" ,
-     "education": "Среднее профессиональное",
-      "start_date": datetime(2021, 6, 20)},
-
-    {"full_name": "Семенович Кузнецов",
-     "position": "Менеджер по закупкам",
-      "work_schedule": "5/2, смены с 10:00 до 19:00",
-     "salary": 800, "currency":"VEF",
-     "education": "Высшее",
-      "start_date": datetime(2015, 3, 15)},
-
-    {"full_name": "Анна Павлова",
-     "position": "Кассир",
-      "work_schedule": "5/2, смены с 9:00 до 18:00",
-     "salary": 300,"currency": "VEF" ,
-     "education": "Среднее",
-      "start_date": datetime( 2020, 12, 10)},
-
-    {"full_name": "Лариса Сергеевна Иванова",
-     "position": "Продавец",
-      "work_schedule": "2/2, смены с 7:00 до 16:00",
-     "salary": 450,"currency": "VEF" ,
-     "education": "Среднее",
-      "start_date": datetime(2022, 11, 25)},
-
-    {"full_name": "Владимир Михайлович Семенов",
-     "position": "Менеджер по продажам",
-      "work_schedule": "5/2, смены с 9:00 до 18:00",
-     "salary": 600 ,"currency":"VEF" ,
-     "education": "Высшее",
-      "start_date": datetime(2021, 8,10)},
-
-    {"full_name": "Елена Анатольевна Павлова",
-     "position": "Кассир",
-      "work_schedule": "5/2, смены с 8:00 до 17:00",
-     "salary": 350,"currency": "VEF" ,
-     "education": "Среднее",
-      "start_date": datetime(2020, 9,5 )},
-
-    {"full_name": "Алексей Игоревич Кузнецов",
-     "position": "Охранник",
-      "work_schedule": "5/2, смены с 1:00 до 22:00",
-     "salary": 210,"currency": "VEF" ,
-     "education": "Среднее",
-      "start_date": datetime( 2022,3,7 )},
-
-    {"full_name": "Ольга Николаевна Лебедева",
-     "position": "Уборщик",
-      "work_schedule": "7/0, смены с 8:00 до 1:00",
-     "salary": 420,"currency": "VEF" ,
-     "education": "Среднее профессиональное",
-      "start_date": datetime( 2018,4,12)},
-
-    {"full_name": "Денис Викторович Попов",
-     "position": "Менеджер по закупкам",
-      "work_schedule": "5/2, смены с 10:00 до 19:00",
-     "salary": 700,"currency": "VEF" ,
-     "education": "Высшее",
-      "start_date": datetime( 2019,7,8)},
-
-    {"full_name": "Екатерина Александровна Смирнова",
-     "position": "Продавец-консультант",
-      "work_schedule": "6/1, смены с 9:00 до 17:00",
-     "salary": 380, "currency":"VEF" ,
-     "education": "Среднее специальное",
-      "start_date": datetime( 2020,5,23)},
-
-    {"full_name": "Данииил Зайцев ",
-     "position": "Разнорабочий",
-      "work_schedule": "5/2, смены с 8:00 до 17:00",
-     "salary": 460, "currency":"VEF" ,
-     "education": "Среднее профессиональное",
-      "start_date": datetime(  2021,7,17)},
-
-    {"full_name": "Елена Александровна Козлова",
-     "position": "Менеджер по маркетингу",
-      "work_schedule": "5/2, смены с 9:00 до 18:00",
-     "salary": 650,"currency": "VEF" ,
-     "education": "Высшее",
-      "start_date": datetime( 2017, 3,14)},
-
-    {"full_name": "Эльдар салихов ",
-     "position": "бухгалтер ",
-      "work_schedule": "1/12, с 13:00 до 14:00",
-     "salary": 10000,"currency": "USD" ,
-     "education": "высшее да",
-      "start_date": datetime(1 ,1,1)},
-
-    {"full_name": "Жаслан Курмашен да ",
-     "position": "эректор немец ",
-      "work_schedule": "1/12, с 13:00 до 14:00",
-     "salary": 10000,"currency": "USD",
-     "education": "высшее немецкое  ",
-      "start_date": datetime(1,1,1)},
-
-    {"full_name": "Козлов Влад ",
-     "position": "эректор немец ",
-      "work_schedule": "1/12, с 13:00 до 14:00",
-     "salary": 10000,"currency": "USD",
-     "education": "высшее немецкое  ",
-      "start_date": datetime(1,1,1)}
-    # Добавьте остальные данные здесь
-]
-
-with app.app_context():
-    for data in employee_data:
-        employee = Employee(
-            full_name=data['full_name'],
-            position=data['position'],
-            work_schedule=data['work_schedule'],
-            salary=data['salary'],
-            currency=data['currency'],
-            education=data['education'],
-            start_date=data['start_date']
-        )
-        db.session.add(employee)
-
-        db.session.commit()"""
+    
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('index'))
 
 @app.route('/')
 def index():
