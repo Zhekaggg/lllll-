@@ -3,61 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Table</title>
+    <title>Учет работников
+      
+    </title>
     <link href="{{ url_for('static', filename='css/rviain.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ url_for('static', filename='js/script.js')}}"></script>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div id="branding">
-                <h1>CCC</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#">Главная</a></li>
-                    {% if 'logged_in' in session %}
-                        <li><a href="{{ url_for('logout') }}">Выйти</a></li>
-                        <li><a href="/add_employee">Регистрация</a></li>
-                    {% else %}
-                        <li><a href="/login">Войти</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
+  <header>
+    <div class="container">
+        <div id="branding">
+            <h1>CCC</h1>
         </div>
-    </header>
+        <nav>
+            <ul>
+                <li><a href="/">Главная</a></li>
+                {% if 'logged_in' in session %}
+                    <li><a href="{{ url_for('logout') }}">Выйти</a></li>
+                    <li><a href="/add_employee">Регистрация</a></li>
+                {% else %}
+                    <li><a href="/login">Войти</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+{% if 'logged_in' in session %}
+        <p>Добро пожаловать!</p>
     
-    {% if 'logged_in' in session %}
-        <p>Добро пожаловать, {{ employee[0].full_name }}!</p>
-        
-        <table id="employeeTable">
-            <thead>
-                <tr>
-                    <th>ИФО</th>
-                    <th>Должность</th>
-                    <th>График работы</th>
-                    <th>Оклад</th>
-                    <th>Валюта</th>
-                    <th>Образование</th>
-                    <th>Дата принятия на работу</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for employee in employees %}
-                    <tr>
-                        <td>{{ employee.full_name }}</td>
-                        <td>{{ employee.position }}</td>
-                        <td>{{ employee.work_schedule }}</td>
-                        <td>{{ employee.salary }}</td>
-                        <td>{{ employee.currency}}</td>
-                        <td>{{ employee.education }}</td>
-                        <td>{{ employee.start_date }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Войдите в аккаунт, чтобы увидеть содержимое.</p>
-    {% endif %}
+    <!-- Обновите таблицу в вашем HTML-шаблоне -->
+<!-- Обновите таблицу в вашем HTML-шаблоне -->
+<table id="employeeTable">
+    <thead>
+        <tr>
+            <th>ИФО</th>
+            <th>Должность</th>
+            <th>График работы</th>
+            <th>Оклад</th>
+            <th>Валюта</th>
+            <th>Образование</th>
+            <th>Дата принятия на работу</th>
+            {% if is_admin %}
+                <th>Действия</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in employees %}
+            <tr>
+                <td>{{ employee.full_name }}</td>
+                <td>{{ employee.position }}</td>
+                <td>{{ employee.work_schedule }}</td>
+                <td>{{ employee.salary }}</td>
+                <td>{{ employee.currency}}</td>
+                <td>{{ employee.education }}</td>
+                <td>{{ employee.start_date }}</td>
+                {% if is_admin %}
+                    <td>
+                        <form method="post" action="{{ url_for('delete_employee', employee_id=employee.id) }}">
+                            <input type="submit" value="Удалить">
+                        </form>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% else %}
+    <p>Войдите в аккаунт, чтобы увидеть содержимое.</p>
+{% endif %}
+
+  <footer>
+    <p>&copy; 2048 Информационная система сотрудников</p>
+  </footer>
 </body>
 </html>

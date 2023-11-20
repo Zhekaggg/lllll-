@@ -8,8 +8,35 @@
     <script src="{{ url_for('static', filename='js/script.js')}}"></script>
 </head>
 <body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1>CCC</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Главная</a></li>
+                    {% if 'logged_in' in session %}
+                        <li><a href="{{ url_for('logout') }}">Выйти</a></li>
+                        
+                    {% else %}
+                        <li><a href="/login">Войти</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
     <h1>Add Employee</h1>
     <form method="post" action="{{ url_for('add_employee') }}">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" name="username" required><br>
+
+        <label for="password">Пароль:</label>
+        <input type="password" name="password" required><br>
+
+        <label for="confirm_password">Повторите пароль:</label>
+        <input type="password" name="confirm_password" required><br>
+
         <label for="full_name">ФИО:</label>
         <input type="text" name="full_name" required><br>
 
@@ -34,6 +61,6 @@
         <input type="submit" value="Add Employee">
     </form>
     <br>
-    <a href="{{ url_for('index') }}">Back to Employee List</a>
+    <a href="{{ url_for('index') }}">Вернуца на главное</a>
 </body>
 </html>
