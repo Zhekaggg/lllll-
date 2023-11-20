@@ -29,6 +29,7 @@ class AdminEmployee(Employee):
         self.is_admin = True
 
 
+        
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -50,8 +51,9 @@ def login():
 # Add employee route
 @app.route('/add_employee', methods=['GET', 'POST'])
 def add_employee():
+    admin_usernames = ['AL0', 'AL01', 'AL02']
     if 'logged_in' in session and session['logged_in']:
-        if session['username'] == 'AL0':  # Проверка, является ли пользователь AL0
+        if session['username'] in admin_usernames:  # Проверка, является ли пользователь AL0
             if request.method == 'POST':
                 # Ваш код для добавления сотрудника
                 username = request.form['username']
@@ -83,7 +85,8 @@ def add_employee():
 
             return render_template('add_employee.html')
         else:
-            return "У вас нет прав для добавления работника."
+            return redirect(url_for('index', error='no_permission'))
+
     else:
         return redirect(url_for('login'))
     
@@ -91,7 +94,8 @@ def add_employee():
 # Добавьте этот код после маршрута /add_employee
 @app.route('/delete_employee/<int:employee_id>', methods=['POST'])
 def delete_employee(employee_id):
-    if 'logged_in' in session and session['logged_in'] and session['username'] == 'AL0':
+    admin_usernames = ['AL0', 'AL01', 'AL02']
+    if 'logged_in' in session and session['logged_in'] and session['username'] in admin_usernames:
         if request.method == 'POST':
             employee = Employee.query.get_or_404(employee_id)
             db.session.delete(employee)
@@ -102,7 +106,6 @@ def delete_employee(employee_id):
     else:
         return "У вас нет прав для удаления работника."
 
-
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -111,8 +114,10 @@ def logout():
 @app.route('/')
 def index():
     employees = Employee.query.all()
-    is_admin = 'logged_in' in session and session['logged_in'] and session['username'] == 'AL0'
-    return render_template('index.html', employees=employees, is_admin=is_admin)
+    admin_usernames = ['AL0', 'AL01', 'AL02']
+    is_admin = 'logged_in' in session and session['logged_in'] and session['username'] in admin_usernames
+    error = request.args.get('error')
+    return render_template('index.html', employees=employees, is_admin=is_admin, error=error)
 
 
 if __name__ == '__main__':
