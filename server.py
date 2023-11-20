@@ -5,8 +5,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
-app.config['BASIC_AUTH_USERNAME'] = 'admin'
-app.config['BASIC_AUTH_PASSWORD'] = 'password'  # Change this to a secure password
+ # Change this to a secure password
 app.config['SECRET_KEY'] = 'ijijiejdijedekd'  # Change this to a secure secret key
 db = SQLAlchemy(app)
 basic_auth = BasicAuth(app)
@@ -55,6 +54,8 @@ def add_employee():
         if session['username'] == 'AL0':  # Проверка, является ли пользователь AL0
             if request.method == 'POST':
                 # Ваш код для добавления сотрудника
+                username = request.form['username']
+                password = request.form['password']
                 full_name = request.form['full_name']
                 position = request.form['position']
                 work_schedule = request.form['work_schedule']
@@ -64,6 +65,8 @@ def add_employee():
                 start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
 
                 employee = Employee(
+                    username = username,
+                    password = password,
                     full_name=full_name,
                     position=position,
                     work_schedule=work_schedule,
@@ -84,7 +87,22 @@ def add_employee():
     else:
         return redirect(url_for('login'))
     
-    
+# Добавьте этот код после маршрута /add_employee
+# Добавьте этот код после маршрута /add_employee
+@app.route('/delete_employee/<int:employee_id>', methods=['POST'])
+def delete_employee(employee_id):
+    if 'logged_in' in session and session['logged_in'] and session['username'] == 'AL0':
+        if request.method == 'POST':
+            employee = Employee.query.get_or_404(employee_id)
+            db.session.delete(employee)
+            db.session.commit()
+            return redirect(url_for('index'))
+        else:
+            return "Неверный метод запроса для удаления работника."
+    else:
+        return "У вас нет прав для удаления работника."
+
+
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -93,7 +111,9 @@ def logout():
 @app.route('/')
 def index():
     employees = Employee.query.all()
-    return render_template('index.html', employees=employees)
+    is_admin = 'logged_in' in session and session['logged_in'] and session['username'] == 'AL0'
+    return render_template('index.html', employees=employees, is_admin=is_admin)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
