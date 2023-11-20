@@ -1,149 +1,101 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-  }
-  
-  header {
-    background: #405D27;
-    color: #ffffff;
-    padding-top: 30px;
-    min-height: 70px;
-    border-bottom: #94A88A 3px solid;
-  }
-  
-  header #branding {
-    float: left;
-  }
-  
-  header #branding h1 {
-    margin: 0;
-  }
-  
-  header nav {
-    float: right;
-    margin-top: 10px;
-  }
-  
-  header nav ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  
-  header nav ul li {
-    display: inline;
-    margin: 0 20px 0 20px;
-  }
-  
-  header nav ul li a {
-    color: #ffffff;
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-  
-  header nav ul li a:hover {
-    color: #C2D4B8;
-  }
-  
-  .sidebar {
-    float: left;
-    width: 30%;
-    margin-top: 20px;
-  }
-  
-  .sidebar aside {
-    background: #C2D4B8;
-    padding: 15px;
-    margin-bottom: 15px;
-  }
-  
-  main {
-    float: right;
-    width: 65%;
-    margin-top: 20px;
-  }
-  
-  section {
-    background: #ffffff;
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-  
-  footer {
-    text-align: center;
-    padding: 20px;
-    background: #405D27;
-    color: #ffffff;
-    margin-top: 20px;
-    clear: both;
-  }
-
-  
-
-.calendar-container {
-  max-width: 600px;
-  margin: 20px auto;
-  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
 }
 
-.month-selector {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+.container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
 }
 
-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
+header {
+  background: #405D27;
+  color: #ffffff;
+  padding-top: 30px;
+  min-height: 70px;
+  border-bottom: #94A88A 3px solid;
 }
 
-button:hover {
-  background-color: #45a049;
+header #branding {
+  float: left;
 }
 
-#calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-gap: 5px;
+header #branding h1 {
+  margin: 0;
 }
 
-.day {
-  padding: 10px;
-  border: 1px solid #ddd;
-  cursor: pointer;
+header nav {
+  float: right;
+  margin-top: 10px;
 }
 
-.today {
-  border: 2px solid #4CAF50;
-  border-radius: 50%;
+header nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.current-day {
-  background-color: #4CAF50;
-  color: white;
+header nav ul li {
+  display: inline;
+  margin: 0 20px 0 20px;
 }
 
-.event-list {
+header nav ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+header nav ul li a:hover {
+  color: #C2D4B8;
+}
+
+.sidebar {
+  float: left;
+  width: 30%;
   margin-top: 20px;
-  text-align: left;
 }
 
-.event {
-  background-color: #4CAF50;
-  color: white;
-  padding: 5px;
-  margin: 2px;
-  border-radius: 5px;
+.sidebar aside {
+  background: #C2D4B8;
+  padding: 15px;
+  margin-bottom: 15px;
 }
+
+main {
+  float: right;
+  width: 65%;
+  margin-top: 20px;
+}
+
+section {
+  background: #ffffff;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #405D27;
+  color: #ffffff;
+  margin-top: 20px;
+  clear: both;
+}
+
+  
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
