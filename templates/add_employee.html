@@ -11,7 +11,7 @@
     <header>
         <div class="container">
             <div id="branding">
-                <h1>CCC</h1>
+                <h1>Учет сотруднико</h1>
             </div>
             <nav>
                 <ul>
@@ -26,41 +26,42 @@
             </nav>
         </div>
     </header>
-    <h1>Add Employee</h1>
+<div class="oo">
+    
     <form method="post" action="{{ url_for('add_employee') }}">
-        <label for="username">Имя пользователя:</label>
-        <input type="text" name="username" required><br>
+        <h1>Add Employee</h1>
+        
+        <input class="input" type="text" name="username" placeholder="Имя пользователя" required><br>
 
-        <label for="password">Пароль:</label>
-        <input type="password" name="password" required><br>
+        <input class="input" type="password" name="password"  placeholder="Пароль" required><br>
 
-        <label for="confirm_password">Повторите пароль:</label>
-        <input type="password" name="confirm_password" required><br>
 
-        <label for="full_name">ФИО:</label>
-        <input type="text" name="full_name" required><br>
+        <input class="input" type="password" name="confirm_password" placeholder="Повторите пароль " required><br>
 
-        <label for="position">Должность:</label>
-        <input type="text" name="position" required><br>
+     
+        <input class="input" type="text" name="full_name" placeholder="ФИО" required><br>
 
-        <label for="work_schedule">График работы:</label>
-        <input type="text" name="work_schedule" required><br>
+   
+        <input class="input" type="text" name="position" placeholder="Должность" required><br>
 
-        <label for="salary">Оклад:</label>
-        <input type="number" name="salary" required><br>
+    
+        <input class="input" type="text" name="work_schedule" placeholder="График работы" required><br>
 
-        <label for="currency">Валюта:</label>
-        <input type="text" name="currency" required><br>
 
-        <label for="education">Образование:</label>
-        <input type="text" name="education" required><br>
+        <input class="input" type="number" name="salary" placeholder="Оклад" required><br>
 
-        <label for="start_date">Дата принятия на работу:</label>
-        <input type="date" name="start_date" required><br>
+        
+        <input class="input" type="text" name="currency" placeholder="Валюта" required><br>
 
-        <input type="submit" value="Add Employee">
+        
+        <input class="input" type="text" name="education" placeholder="Образование" required><br>
+ 
+        
+        <input class="input" type="date" name="start_date" placeholder="Дата принятия на работу" required><br>
+
+        <input class="input" type="submit" value="Add Employee">
     </form>
-    <br>
-    <a href="{{ url_for('index') }}">Вернуца на главное</a>
+</div>
+    
 </body>
 </html>

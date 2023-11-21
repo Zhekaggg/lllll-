@@ -13,7 +13,7 @@
   <header>
     <div class="container">
         <div id="branding">
-            <h1>CCC</h1>
+            <h1>Учет сотруднико</h1>
         </div>
         <nav>
             <ul>
@@ -30,8 +30,13 @@
 </header>
 
 {% if 'logged_in' in session %}
+{% if error == 'no_permission' %}
+    <p style="color: red;">У вас нет прав для добавления работника.</p>
+{% endif %}
+
+<div class="fr">
         <p>Добро пожаловать!</p>
-    
+</div>
     <!-- Обновите таблицу в вашем HTML-шаблоне -->
 <!-- Обновите таблицу в вашем HTML-шаблоне -->
 <table id="employeeTable">
@@ -60,11 +65,15 @@
                 <td>{{ employee.education }}</td>
                 <td>{{ employee.start_date }}</td>
                 {% if is_admin %}
-                    <td>
+                
+                    <td >
                         <form method="post" action="{{ url_for('delete_employee', employee_id=employee.id) }}">
-                            <input type="submit" value="Удалить">
+                            
+                            <input type="submit"  class="gg" value="Удалить">
+                        
                         </form>
                     </td>
+                
                 {% endif %}
             </tr>
         {% endfor %}
@@ -74,7 +83,9 @@
 
 
 {% else %}
+<div class="tg">
     <p>Войдите в аккаунт, чтобы увидеть содержимое.</p>
+</div>
 {% endif %}
 
   <footer>
