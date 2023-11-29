@@ -10,6 +10,8 @@
       position: absolute;
       top: 200px;
       cursor: pointer;
+      /* Добавляем свойство transition для плавности анимации */
+      transition: all 1s ease;
     }
 
     #cup1 {
@@ -34,6 +36,8 @@
       top: 225px;
       left: 325px;
       display: none;
+      /* Добавляем свойство animation для анимации мяча */
+      animation: bounce 0.5s infinite alternate;
     }
 
     #play {
@@ -55,6 +59,16 @@
       top: 350px;
       left: 250px;
       display: none;
+    }
+
+    /* Добавляем правило @keyframes для анимации мяча */
+    @keyframes bounce {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(-50px);
+      }
     }
   </style>
 </head>
@@ -170,3 +184,4 @@
   </script>
 </body>
 </html>
+
