@@ -151,7 +151,10 @@
       play.disabled = true; // Отключаем кнопку играть
       showBall(); // Показываем мячик
       setTimeout(hideBall, 1000); // Прячем мячик через секунду
-      setTimeout(shuffle, 1500); // Перемешиваем напёрстки через полторы секунды
+      // Перемешиваем напёрстки три раза с интервалом в секунду
+      setTimeout(shuffle, 1500);
+      setTimeout(shuffle, 2500);
+      setTimeout(shuffle, 3500);
     }
 
     // Заканчиваем игру
@@ -184,4 +187,5 @@
   </script>
 </body>
 </html>
+
 
