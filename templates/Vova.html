@@ -1,4 +1,4 @@
-<html>
+      <html>
 <head>
   <style>
     .cup {
@@ -80,13 +80,8 @@
   <button id="play">Играть</button>
   <div id="message"></div>
   <script>
-    // Получаем элементы
-    var cup1 = document.getElementById("cup1");
-    var cup2 = document.getElementById("cup2");
-    var cup3 = document.getElementById("cup3");
-    var ball = document.getElementById("ball");
-    var play = document.getElementById("play");
-    var message = document.getElementById("message");
+    var round = 1;
+    var speedIncrement = 100; // Speed increment for each round
 
     // Генерируем случайное число от 1 до 3
     function random() {
@@ -117,12 +112,15 @@
       if (n == 1) {
         cup1.style.left = "500px";
         cup3.style.left = "100px";
+        cup2.style.left = "300px"; // Added line to prevent cups from overlapping
       } else if (n == 2) {
         cup1.style.left = "300px";
         cup2.style.left = "100px";
+        cup3.style.left = "500px"; // Added line to prevent cups from overlapping
       } else {
         cup2.style.left = "500px";
         cup3.style.left = "300px";
+        cup1.style.left = "100px"; // Added line to prevent cups from overlapping
       }
     }
 
@@ -163,9 +161,13 @@
       showBall(); // Показываем мячик
       reset(); // Возвращаем напёрстки на исходные позиции
       if (check(n)) { // Проверяем, правильно ли выбрал пользователь
-        message.innerHTML = "Вы выиграли! 🎉";
+        message.innerHTML = "Вы выиграли! 🎉 Раунд: " + round;
+        round++;
+        speedIncrement += 100; // Increase speed increment for the next round
       } else {
         message.innerHTML = "Вы проиграли! 😢";
+        round = 1; // Reset round count on loss
+        speedIncrement = 100; // Reset speed increment on loss
       }
       message.style.display = "block"; // Показываем сообщение
       setTimeout(function() {
@@ -186,6 +188,5 @@
     });
   </script>
 </body>
-</html>
-
-
+      </html>
+      
