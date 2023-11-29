@@ -12,19 +12,8 @@
       cursor: pointer;
     }
 
-    .ball {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: red;
-      position: absolute;
-      top: 225px;
-      left: 175px;
-      display: none;
-    }
-
     #cup1 {
-      left: 150px;
+      left: 100px;
     }
 
     #cup2 {
@@ -32,16 +21,40 @@
     }
 
     #cup3 {
-      left: 450px;
+      left: 500px;
+    }
+
+    #ball {
+      width: 50px;
+      height: 50px;
+      border: 2px solid black;
+      border-radius: 50%;
+      background-color: red;
+      position: absolute;
+      top: 225px;
+      left: 325px;
+      display: none;
     }
 
     #play {
       width: 100px;
       height: 50px;
       font-size: 20px;
+      background-color: green;
+      color: white;
       position: absolute;
       top: 50px;
+      left: 350px;
+      cursor: pointer;
+    }
+
+    #message {
+      font-size: 30px;
+      text-align: center;
+      position: absolute;
+      top: 350px;
       left: 250px;
+      display: none;
     }
   </style>
 </head>
@@ -49,8 +62,9 @@
   <div id="cup1" class="cup"></div>
   <div id="cup2" class="cup"></div>
   <div id="cup3" class="cup"></div>
-  <div id="ball" class="ball"></div>
+  <div id="ball"></div>
   <button id="play">Играть</button>
+  <div id="message"></div>
   <script>
     // Получаем элементы
     var cup1 = document.getElementById("cup1");
@@ -58,6 +72,7 @@
     var cup3 = document.getElementById("cup3");
     var ball = document.getElementById("ball");
     var play = document.getElementById("play");
+    var message = document.getElementById("message");
 
     // Генерируем случайное число от 1 до 3
     function random() {
@@ -68,11 +83,11 @@
     function showBall() {
       var n = random();
       if (n == 1) {
-        ball.style.left = "175px";
+        ball.style.left = "125px";
       } else if (n == 2) {
         ball.style.left = "325px";
       } else {
-        ball.style.left = "475px";
+        ball.style.left = "525px";
       }
       ball.style.display = "block";
     }
@@ -86,57 +101,72 @@
     function shuffle() {
       var n = random();
       if (n == 1) {
-        cup1.style.left = "450px";
-        cup3.style.left = "150px";
+        cup1.style.left = "500px";
+        cup3.style.left = "100px";
       } else if (n == 2) {
-        cup2.style.left = "150px";
         cup1.style.left = "300px";
+        cup2.style.left = "100px";
       } else {
+        cup2.style.left = "500px";
         cup3.style.left = "300px";
-        cup2.style.left = "450px";
       }
     }
 
     // Возвращаем напёрстки на исходные позиции
     function reset() {
-      cup1.style.left = "150px";
+      cup1.style.left = "100px";
       cup2.style.left = "300px";
-      cup3.style.left = "450px";
+      cup3.style.left = "500px";
     }
 
     // Проверяем, где мячик
     function check(n) {
-      if (n == 1 && ball.style.left == "175px") {
-        alert("Вы выиграли!");
+      if (n == 1 && ball.style.left == "125px") {
+        return true;
       } else if (n == 2 && ball.style.left == "325px") {
-        alert("Вы выиграли!");
-      } else if (n == 3 && ball.style.left == "475px") {
-        alert("Вы выиграли!");
+        return true;
+      } else if (n == 3 && ball.style.left == "525px") {
+        return true;
       } else {
-        alert("Вы проиграли!");
+        return false;
       }
     }
 
+    // Начинаем игру
+    function start() {
+      play.disabled = true; // Отключаем кнопку играть
+      showBall(); // Показываем мячик
+      setTimeout(hideBall, 1000); // Прячем мячик через секунду
+      setTimeout(shuffle, 1500); // Перемешиваем напёрстки через полторы секунды
+    }
+
+    // Заканчиваем игру
+    function end(n) {
+      play.disabled = false; // Включаем кнопку играть
+      showBall(); // Показываем мячик
+      reset(); // Возвращаем напёрстки на исходные позиции
+      if (check(n)) { // Проверяем, правильно ли выбрал пользователь
+        message.innerHTML = "Вы выиграли! 🎉";
+      } else {
+        message.innerHTML = "Вы проиграли! 😢";
+      }
+      message.style.display = "block"; // Показываем сообщение
+      setTimeout(function() {
+        message.style.display = "none"; // Прячем сообщение через секунду
+      }, 1000);
+    }
+
     // Добавляем обработчики событий
-    play.addEventListener("click", function() {
-      showBall();
-      setTimeout(hideBall, 1000);
-      setTimeout(shuffle, 2000);
-      setTimeout(reset, 4000);
-    });
-
+    play.addEventListener("click", start); // Нажатие на кнопку играть
     cup1.addEventListener("click", function() {
-      check(1);
+      end(1); // Нажатие на первый напёрсток
     });
-
     cup2.addEventListener("click", function() {
-      check(2);
+      end(2); // Нажатие на второй напёрсток
     });
-
     cup3.addEventListener("click", function() {
-      check(3);
+      end(3); // Нажатие на третий напёрсток
     });
   </script>
 </body>
 </html>
-
