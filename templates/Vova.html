@@ -1,41 +1,15 @@
 <html>
 <head>
   <style>
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
     .cup {
       width: 100px;
       height: 100px;
-      border-radius: 50%;
-      background-color: brown;
-      position: relative;
-      margin: 20px;
-      cursor: pointer;
-      transition: transform 0.5s;
-    }
-
-    .cup:hover {
-      transform: scale(1.1);
-    }
-
-    .cup:active {
-      transform: scale(0.9);
-    }
-
-    .cup:before {
-      content: "";
-      width: 100px;
-      height: 50px;
+      border: 2px solid black;
       border-radius: 50%;
       background-color: white;
       position: absolute;
-      top: -25px;
-      left: 0;
+      top: 200px;
+      cursor: pointer;
     }
 
     .ball {
@@ -44,148 +18,125 @@
       border-radius: 50%;
       background-color: red;
       position: absolute;
-      bottom: 25px;
-      left: 25px;
+      top: 225px;
+      left: 175px;
       display: none;
     }
 
-    .message {
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
+    #cup1 {
+      left: 150px;
+    }
+
+    #cup2 {
+      left: 300px;
+    }
+
+    #cup3 {
+      left: 450px;
+    }
+
+    #play {
+      width: 100px;
+      height: 50px;
+      font-size: 20px;
+      position: absolute;
+      top: 50px;
+      left: 250px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="cup" id="cup1"></div>
-    <div class="cup" id="cup2"></div>
-    <div class="cup" id="cup3"></div>
-    <div class="ball" id="ball"></div>
-  </div>
-  <div class="message" id="message">Найди шарик!</div>
+  <div id="cup1" class="cup"></div>
+  <div id="cup2" class="cup"></div>
+  <div id="cup3" class="cup"></div>
+  <div id="ball" class="ball"></div>
+  <button id="play">Играть</button>
   <script>
-    // Get the elements
-    const cup1 = document.getElementById("cup1");
-    const cup2 = document.getElementById("cup2");
-    const cup3 = document.getElementById("cup3");
-    const ball = document.getElementById("ball");
-    const message = document.getElementById("message");
+    // Получаем элементы
+    var cup1 = document.getElementById("cup1");
+    var cup2 = document.getElementById("cup2");
+    var cup3 = document.getElementById("cup3");
+    var ball = document.getElementById("ball");
+    var play = document.getElementById("play");
 
-    // Define the positions of the cups
-    const positions = [
-      {left: "20px", top: "25px"},
-      {left: "140px", top: "25px"},
-      {left: "260px", top: "25px"}
-    ];
+    // Генерируем случайное число от 1 до 3
+    function random() {
+      return Math.floor(Math.random() * 3) + 1;
+    }
 
-    // Define the swaps of the cups
-    const swaps = [
-      [cup1, cup2],
-      [cup2, cup3],
-      [cup1, cup3],
-      [cup2, cup1],
-      [cup3, cup2],
-      [cup3, cup1]
-    ];
-
-    // Define the variables
-    let ballIndex = 0; // The index of the cup that has the ball
-    let swapping = false; // The flag to indicate if the cups are swapping
-    let speed = 1000; // The speed of the swapping animation
-
-    // Initialize the game
-    function init() {
-      // Randomly assign the ball to a cup
-      ballIndex = Math.floor(Math.random() * 3);
-      ball.style.left = positions[ballIndex].left;
-      ball.style.top = positions[ballIndex].top;
+    // Показываем мячик под одним из напёрстков
+    function showBall() {
+      var n = random();
+      if (n == 1) {
+        ball.style.left = "175px";
+      } else if (n == 2) {
+        ball.style.left = "325px";
+      } else {
+        ball.style.left = "475px";
+      }
       ball.style.display = "block";
-
-      // Reset the message
-      message.textContent = "Найди шарик!";
-
-      // Start the swapping animation
-      swapping = true;
-      swap(0);
     }
 
-    // Swap two cups
-    function swap(index) {
-      // Check if the index is valid
-      if (index < 0 || index >= swaps.length) {
-        return;
-      }
-
-      // Get the two cups to swap
-      const cupA = swaps[index][0];
-      const cupB = swaps[index][1];
-
-      // Get the positions of the two cups
-      const posA = cupA.getBoundingClientRect();
-      const posB = cupB.getBoundingClientRect();
-
-      // Calculate the distance and direction of the swapping
-      const distX = posB.left - posA.left;
-      const distY = posB.top - posA.top;
-      const dirX = distX > 0 ? 1 : -1;
-      const dirY = distY > 0 ? 1 : -1;
-
-      // Move the two cups
-      cupA.style.transform = `translate(${dirX * 100}%, ${dirY * 100}%)`;
-      cupB.style.transform = `translate(${-dirX * 100}%, ${-dirY * 100}%)`;
-
-      // Update the ball index if needed
-      if (cupA === swaps[index][ballIndex]) {
-        ballIndex = 1 - ballIndex;
-      } else if (cupB === swaps[index][ballIndex]) {
-        ballIndex = 1 - ballIndex;
-      }
-
-      // Wait for the animation to finish
-      setTimeout(() => {
-        // Reset the transform of the two cups
-        cupA.style.transform = "none";
-        cupB.style.transform = "none";
-
-        // Swap the positions of the two cups
-        const temp = cupA.style.left;
-        cupA.style.left = cupB.style.left;
-        cupB.style.left = temp;
-
-        // Move to the next swap
-        swap(index + 1);
-      }, speed);
+    // Прячем мячик
+    function hideBall() {
+      ball.style.display = "none";
     }
 
-    // Check the user's guess
-    function check(cup) {
-      // Check if the swapping is over
-      if (!swapping) {
-        // Check if the cup has the ball
-        if (cup === swaps[swaps.length - 1][ballIndex]) {
-          // Show the ball
-          ball.style.display = "block";
-
-          // Show the message
-          message.textContent = "Правильно! Ты выиграл!";
-        } else {
-          // Hide the ball
-          ball.style.display = "none";
-
-          // Show the message
-          message.textContent = "Неправильно! Ты проиграл!";
-        }
+    // Перемешиваем напёрстки
+    function shuffle() {
+      var n = random();
+      if (n == 1) {
+        cup1.style.left = "450px";
+        cup3.style.left = "150px";
+      } else if (n == 2) {
+        cup2.style.left = "150px";
+        cup1.style.left = "300px";
+      } else {
+        cup3.style.left = "300px";
+        cup2.style.left = "450px";
       }
     }
 
-    // Add the click event listeners to the cups
-    cup1.addEventListener("click", () => check(cup1));
-    cup2.addEventListener("click", () => check(cup2));
-    cup3.addEventListener("click", () => check(cup3));
+    // Возвращаем напёрстки на исходные позиции
+    function reset() {
+      cup1.style.left = "150px";
+      cup2.style.left = "300px";
+      cup3.style.left = "450px";
+    }
 
-    // Start the game
-    init();
+    // Проверяем, где мячик
+    function check(n) {
+      if (n == 1 && ball.style.left == "175px") {
+        alert("Вы выиграли!");
+      } else if (n == 2 && ball.style.left == "325px") {
+        alert("Вы выиграли!");
+      } else if (n == 3 && ball.style.left == "475px") {
+        alert("Вы выиграли!");
+      } else {
+        alert("Вы проиграли!");
+      }
+    }
+
+    // Добавляем обработчики событий
+    play.addEventListener("click", function() {
+      showBall();
+      setTimeout(hideBall, 1000);
+      setTimeout(shuffle, 2000);
+      setTimeout(reset, 4000);
+    });
+
+    cup1.addEventListener("click", function() {
+      check(1);
+    });
+
+    cup2.addEventListener("click", function() {
+      check(2);
+    });
+
+    cup3.addEventListener("click", function() {
+      check(3);
+    });
   </script>
 </body>
 </html>
+
