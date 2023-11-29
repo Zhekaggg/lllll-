@@ -1,144 +1,191 @@
 <html>
 <head>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-
     .container {
       display: flex;
       justify-content: center;
-      margin-top: 50px;
+      align-items: center;
+      height: 100vh;
     }
 
     .cup {
       width: 100px;
       height: 100px;
-      border: 2px solid black;
       border-radius: 50%;
-      background-color: white;
+      background-color: brown;
       position: relative;
+      margin: 20px;
       cursor: pointer;
+      transition: transform 0.5s;
     }
 
     .cup:hover {
-      background-color: lightgray;
+      transform: scale(1.1);
     }
 
-    .cup.selected {
-      background-color: yellow;
+    .cup:active {
+      transform: scale(0.9);
+    }
+
+    .cup:before {
+      content: "";
+      width: 100px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: -25px;
+      left: 0;
     }
 
     .ball {
       width: 50px;
       height: 50px;
-      border: 2px solid black;
       border-radius: 50%;
       background-color: red;
       position: absolute;
-      top: 25px;
+      bottom: 25px;
       left: 25px;
       display: none;
-    }
-
-    .cup.shuffled {
-      animation: shuffle 1s ease-in-out;
-    }
-
-    @keyframes shuffle {
-      0% {
-        transform: translateX(0px);
-      }
-      25% {
-        transform: translateX(200px);
-      }
-      50% {
-        transform: translateX(0px);
-      }
-      75% {
-        transform: translateX(-200px);
-      }
-      100% {
-        transform: translateX(0px);
-      }
     }
 
     .message {
       font-size: 24px;
       font-weight: bold;
-      margin-top: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Игра напёрстки</h1>
-  <p>Найдите красный шарик под одним из трёх напёрстков.</p>
   <div class="container">
-    <div class="cup" id="cup1">
-      <div class="ball"></div>
-    </div>
-    <div class="cup" id="cup2">
-      <div class="ball"></div>
-    </div>
-    <div class="cup" id="cup3">
-      <div class="ball"></div>
-    </div>
+    <div class="cup" id="cup1"></div>
+    <div class="cup" id="cup2"></div>
+    <div class="cup" id="cup3"></div>
+    <div class="ball" id="ball"></div>
   </div>
-  <div class="message" id="message"></div>
+  <div class="message" id="message">Найди шарик!</div>
   <script>
-    // Получаем элементы напёрстков и сообщения
-    var cup1 = document.getElementById("cup1");
-    var cup2 = document.getElementById("cup2");
-    var cup3 = document.getElementById("cup3");
-    var message = document.getElementById("message");
+    // Get the elements
+    const cup1 = document.getElementById("cup1");
+    const cup2 = document.getElementById("cup2");
+    const cup3 = document.getElementById("cup3");
+    const ball = document.getElementById("ball");
+    const message = document.getElementById("message");
 
-    // Добавляем обработчики кликов по напёрсткам
-    cup1.addEventListener("click", function() {
-      checkCup(cup1);
-    });
-    cup2.addEventListener("click", function() {
-      checkCup(cup2);
-    });
-    cup3.addEventListener("click", function() {
-      checkCup(cup3);
-    });
+    // Define the positions of the cups
+    const positions = [
+      {left: "20px", top: "25px"},
+      {left: "140px", top: "25px"},
+      {left: "260px", top: "25px"}
+    ];
 
-    // Функция для проверки напёрстка
-    function checkCup(cup) {
-      // Если напёрсток содержит шарик, то показываем его и выводим сообщение о победе
-      if (cup.querySelector(".ball").style.display == "block") {
-        cup.classList.add("selected");
-        message.textContent = "Вы выиграли!";
-      } else {
-        // Иначе выводим сообщение о проигрыше
-        message.textContent = "Вы проиграли!";
+    // Define the swaps of the cups
+    const swaps = [
+      [cup1, cup2],
+      [cup2, cup3],
+      [cup1, cup3],
+      [cup2, cup1],
+      [cup3, cup2],
+      [cup3, cup1]
+    ];
+
+    // Define the variables
+    let ballIndex = 0; // The index of the cup that has the ball
+    let swapping = false; // The flag to indicate if the cups are swapping
+    let speed = 1000; // The speed of the swapping animation
+
+    // Initialize the game
+    function init() {
+      // Randomly assign the ball to a cup
+      ballIndex = Math.floor(Math.random() * 3);
+      ball.style.left = positions[ballIndex].left;
+      ball.style.top = positions[ballIndex].top;
+      ball.style.display = "block";
+
+      // Reset the message
+      message.textContent = "Найди шарик!";
+
+      // Start the swapping animation
+      swapping = true;
+      swap(0);
+    }
+
+    // Swap two cups
+    function swap(index) {
+      // Check if the index is valid
+      if (index < 0 || index >= swaps.length) {
+        return;
       }
-      // Блокируем возможность кликать по напёрсткам
-      cup1.style.pointerEvents = "none";
-      cup2.style.pointerEvents = "none";
-      cup3.style.pointerEvents = "none";
+
+      // Get the two cups to swap
+      const cupA = swaps[index][0];
+      const cupB = swaps[index][1];
+
+      // Get the positions of the two cups
+      const posA = cupA.getBoundingClientRect();
+      const posB = cupB.getBoundingClientRect();
+
+      // Calculate the distance and direction of the swapping
+      const distX = posB.left - posA.left;
+      const distY = posB.top - posA.top;
+      const dirX = distX > 0 ? 1 : -1;
+      const dirY = distY > 0 ? 1 : -1;
+
+      // Move the two cups
+      cupA.style.transform = `translate(${dirX * 100}%, ${dirY * 100}%)`;
+      cupB.style.transform = `translate(${-dirX * 100}%, ${-dirY * 100}%)`;
+
+      // Update the ball index if needed
+      if (cupA === swaps[index][ballIndex]) {
+        ballIndex = 1 - ballIndex;
+      } else if (cupB === swaps[index][ballIndex]) {
+        ballIndex = 1 - ballIndex;
+      }
+
+      // Wait for the animation to finish
+      setTimeout(() => {
+        // Reset the transform of the two cups
+        cupA.style.transform = "none";
+        cupB.style.transform = "none";
+
+        // Swap the positions of the two cups
+        const temp = cupA.style.left;
+        cupA.style.left = cupB.style.left;
+        cupB.style.left = temp;
+
+        // Move to the next swap
+        swap(index + 1);
+      }, speed);
     }
 
-    // Функция для перемешивания напёрстков
-    function shuffleCups() {
-      // Скрываем шарик под случайным напёрстком
-      var randomCup = Math.floor(Math.random() * 3) + 1;
-      document.getElementById("cup" + randomCup).querySelector(".ball").style.display = "block";
-      // Добавляем класс shuffled к каждому напёрстку, чтобы запустить анимацию перемешивания
-      cup1.classList.add("shuffled");
-      cup2.classList.add("shuffled");
-      cup3.classList.add("shuffled");
-      // Удаляем класс shuffled после окончания анимации
-      setTimeout(function() {
-        cup1.classList.remove("shuffled");
-        cup2.classList.remove("shuffled");
-        cup3.classList.remove("shuffled");
-      }, 1000);
+    // Check the user's guess
+    function check(cup) {
+      // Check if the swapping is over
+      if (!swapping) {
+        // Check if the cup has the ball
+        if (cup === swaps[swaps.length - 1][ballIndex]) {
+          // Show the ball
+          ball.style.display = "block";
+
+          // Show the message
+          message.textContent = "Правильно! Ты выиграл!";
+        } else {
+          // Hide the ball
+          ball.style.display = "none";
+
+          // Show the message
+          message.textContent = "Неправильно! Ты проиграл!";
+        }
+      }
     }
 
-    // Запускаем функцию перемешивания напёрстков при загрузке страницы
-    window.onload = shuffleCups;
+    // Add the click event listeners to the cups
+    cup1.addEventListener("click", () => check(cup1));
+    cup2.addEventListener("click", () => check(cup2));
+    cup3.addEventListener("click", () => check(cup3));
+
+    // Start the game
+    init();
   </script>
 </body>
 </html>
