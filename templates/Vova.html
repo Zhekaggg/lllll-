@@ -1,0 +1,144 @@
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .cup {
+      width: 100px;
+      height: 100px;
+      border: 2px solid black;
+      border-radius: 50%;
+      background-color: white;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cup:hover {
+      background-color: lightgray;
+    }
+
+    .cup.selected {
+      background-color: yellow;
+    }
+
+    .ball {
+      width: 50px;
+      height: 50px;
+      border: 2px solid black;
+      border-radius: 50%;
+      background-color: red;
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      display: none;
+    }
+
+    .cup.shuffled {
+      animation: shuffle 1s ease-in-out;
+    }
+
+    @keyframes shuffle {
+      0% {
+        transform: translateX(0px);
+      }
+      25% {
+        transform: translateX(200px);
+      }
+      50% {
+        transform: translateX(0px);
+      }
+      75% {
+        transform: translateX(-200px);
+      }
+      100% {
+        transform: translateX(0px);
+      }
+    }
+
+    .message {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Игра напёрстки</h1>
+  <p>Найдите красный шарик под одним из трёх напёрстков.</p>
+  <div class="container">
+    <div class="cup" id="cup1">
+      <div class="ball"></div>
+    </div>
+    <div class="cup" id="cup2">
+      <div class="ball"></div>
+    </div>
+    <div class="cup" id="cup3">
+      <div class="ball"></div>
+    </div>
+  </div>
+  <div class="message" id="message"></div>
+  <script>
+    // Получаем элементы напёрстков и сообщения
+    var cup1 = document.getElementById("cup1");
+    var cup2 = document.getElementById("cup2");
+    var cup3 = document.getElementById("cup3");
+    var message = document.getElementById("message");
+
+    // Добавляем обработчики кликов по напёрсткам
+    cup1.addEventListener("click", function() {
+      checkCup(cup1);
+    });
+    cup2.addEventListener("click", function() {
+      checkCup(cup2);
+    });
+    cup3.addEventListener("click", function() {
+      checkCup(cup3);
+    });
+
+    // Функция для проверки напёрстка
+    function checkCup(cup) {
+      // Если напёрсток содержит шарик, то показываем его и выводим сообщение о победе
+      if (cup.querySelector(".ball").style.display == "block") {
+        cup.classList.add("selected");
+        message.textContent = "Вы выиграли!";
+      } else {
+        // Иначе выводим сообщение о проигрыше
+        message.textContent = "Вы проиграли!";
+      }
+      // Блокируем возможность кликать по напёрсткам
+      cup1.style.pointerEvents = "none";
+      cup2.style.pointerEvents = "none";
+      cup3.style.pointerEvents = "none";
+    }
+
+    // Функция для перемешивания напёрстков
+    function shuffleCups() {
+      // Скрываем шарик под случайным напёрстком
+      var randomCup = Math.floor(Math.random() * 3) + 1;
+      document.getElementById("cup" + randomCup).querySelector(".ball").style.display = "block";
+      // Добавляем класс shuffled к каждому напёрстку, чтобы запустить анимацию перемешивания
+      cup1.classList.add("shuffled");
+      cup2.classList.add("shuffled");
+      cup3.classList.add("shuffled");
+      // Удаляем класс shuffled после окончания анимации
+      setTimeout(function() {
+        cup1.classList.remove("shuffled");
+        cup2.classList.remove("shuffled");
+        cup3.classList.remove("shuffled");
+      }, 1000);
+    }
+
+    // Запускаем функцию перемешивания напёрстков при загрузке страницы
+    window.onload = shuffleCups;
+  </script>
+</body>
+</html>
